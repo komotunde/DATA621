@@ -1,0 +1,227 @@
+---
+title: 'DATA621 Homework #2'
+author: "Oluwakemi Omotunde"
+date: "February 08, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Linear Models with R - Chapter 2 
+Problems # 4, 5
+
+4. The dataset prostate comes from a study on 97 men with prostate cancer who were due to receive a radical prostectomy. Fit a model with lpsa as the response and lcavol as the predictor. Record the residual standard error and the R^2. Now add lweight, svi, pbph, age, lcp, pgg45, and gleason to the model one at a time. For each model, record the standard error and the R^2 Plot the trends in these two statistics. 
+
+```{r load prostate}
+library(faraway)
+data(prostate)
+head(prostate)
+```
+We will now find the linear model in order to find the residual standard error(RSE) and R^2(R2).
+
+```{r lm lcavol}
+lmod1 <- lm(lpsa ~ lcavol, data = prostate)
+sumary(lmod1)
+```
+
+Below are our results:
+  + RSE: .78750
+  + R2: .54
+Our next task is to add the other predictors. Before that, we need to store our RSE and R2 variables so we can plot later. 
+```{r store variable}
+rse = rep(0,8)
+r2 = rep(0,8)
+rse[1] <- summary(lmod1)$sigma 
+r2[1] <- summary(lmod1)$r.squared
+```
+
+I'll now go ahead and add the other variables and store them so that I can plot later. 
+```{r add variables}
+lmod2 <- lm(lpsa ~ lcavol + lweight, data = prostate)
+sumary(lmod2)
+
+lmod3 <- lm(lpsa ~ lcavol + lweight + svi, data = prostate)
+sumary(lmod3)
+
+lmod4 <- lm(lpsa ~ lcavol + lweight + svi + lbph, data = prostate)
+sumary(lmod4)
+
+lmod5 <- lm(lpsa ~ lcavol + lweight + svi + lbph + age, data = prostate)
+sumary(lmod5)
+
+lmod6 <- lm(lpsa ~ lcavol + lweight + svi + lbph + age + lcp, data = prostate)
+sumary(lmod6)
+
+lmod7 <- lm(lpsa ~ lcavol + lweight + svi + lbph + age + lcp + pgg45, data = prostate)
+sumary(lmod7)
+
+lmod8 <- lm(lpsa ~ lcavol + lweight + svi + lbph + age + lcp + pgg45 + gleason, data = prostate)
+sumary(lmod8)
+```
+
+Now we can store the numbers we got for RSE and R-squared
+
+```{r store variables 2}
+rse[2] <- summary(lmod2)$sigma 
+r2[2] <- summary(lmod2)$r.squared
+
+rse[3] <- summary(lmod3)$sigma 
+r2[3] <- summary(lmod3)$r.squared
+
+rse[4] <- summary(lmod4)$sigma 
+r2[4] <- summary(lmod4)$r.squared
+
+rse[5] <- summary(lmod5)$sigma 
+r2[5] <- summary(lmod5)$r.squared
+
+rse[6] <- summary(lmod6)$sigma 
+r2[6] <- summary(lmod6)$r.squared
+
+rse[7] <- summary(lmod7)$sigma 
+r2[7] <- summary(lmod7)$r.squared
+
+rse[8] <- summary(lmod8)$sigma 
+r2[8] <- summary(lmod8)$r.squared
+```
+
+I had to go back and set an empty variable to collect all the RSE and R2 vairbales.
+
+```{r plot rse}
+plot(rse)
+```
+
+```{r plot rsquared}
+plot(r2)
+```
+
+
+5. Using the prostate data, plot lpsa against lcavol. Fit the regresions of lpsa on lcavol and lcavol on lpsa. Display both regression lines on the plot. At what point do the two lines intersect?
+
+```{r lpsa against lcavol}
+lcavol <- prostate$lcavol
+lpsa <- prostate$lpsa
+
+lmod.lpsa <- lm(lpsa ~ lcavol)
+lmod.lcavol <- lm(lcavol ~ lpsa)
+
+plot(lcavol, lpsa)
+
+abline(lmod.lpsa$coeff[1],lmod.lpsa$coeff[2])
+abline(-lmod.lcavol$coeff[1]/lmod.lcavol$coeff[2], 1/lmod.lcavol$coeff[2])
+```
+
+From the plot, it looks as though the two lines cross at about 1.4.
+
+Modern Approach To Regression - Chapter 2
+Problems 1 and 2
+
+1. The web site www.playbill.com provides weekly reports on the box office ticket sales for plays on Broadway in New York. We shall consider the data for the week October 11-17, 2004 (referred to below as the current week). The data are in the form of the gross box office results for the current week and the gross box office results for the previous week (i.e., October 3-10,2004). The data, plotted in Figure 2.6 , are available on the book web site in the file playbill.csv.
+
+```{r load data}
+url <- ('http://www.stat.tamu.edu/~sheather/book/docs/datasets/playbill.csv')
+data <- read.csv(url, header = TRUE)
+head(data)
+
+library(ISwR)
+```
+
+Now that we have our data, we can go ahead and start answering the questions asked. 
+
+Fit the following modesl to the data: Y = B0 + B1X + e where Y is the gross box office results for the current week(in dollars) and x is the gross box office results for the previous week (in $). Complete the following tasks:
+
+a. Find a 95% confidence interval for the slope of the regression model, B1. Is 1 a plausible value for B1? Give a reason to support your answer.
+
+```{r slope}
+lmod.data <- lm(CurrentWeek ~ LastWeek, data)
+sumary(lmod.data)
+
+m <- lmod.data$coeff["LastWeek"]
+m
+
+plot(data$LastWeek, data$CurrentWeek)
+```
+Our slope is .9820815. We can now find the 95% confidence interval.
+```{r CI}
+confint(lmod.data, 'LastWeek', level = .95)
+```
+
+From our output, we can say that 1 would be a plausible value for B1 as it is in the range .951 - 1.013.
+
+b. Test the null hypothesis H0: Bo = 10000 against a two sided alternative. Interpret your results.
+
+We will perform a t-test with our degrees of freedome being 16.
+
+```{r null hypothesis}
+t <- qt(0.975, 16)
+B0 <- lmod.data$coeff[1]
+SE <- coef(summary(lmod.data))[, "Std. Error"][1]
+CI <- B0 + c(-1,1) * t * SE
+
+B0
+SE
+CI
+```
+Our confidence interval is [-14244.33, 27854.10]. Since 10000 is within that range, it makes sense for us to accept the null hypothesis. 
+
+c. Use the fitted regression model to estimate the gross box office results for the current week(in dollar) for a production with $400,000 in gross box office the previous week. Find a 95% predication interval for the gross box office results from the current week for a production with that same amount in gross box office the previous week. Is 450,000 dollars a feasible value for the gross box office results in the current week, for a production with 400,000 in gross box office the previous week? Give a reason to support your answer. 
+
+```{r prediction interval}
+data.400 = data.frame(LastWeek = 400000)
+pi <- predict(lmod.data, data.400, interval="predict", level = .95)
+pi
+```
+$450,000 is not a feasible value for the gross box office results as it does not fall in our prediction interval.
+
+d. Some promoters of Broadway plays use the prediction rule that next week's gross box office results will be equal to this week's gross box office results. Comment on the appropriateness of this rule. 
+
+```{r kchec}
+plot(lmod.data)
+```
+
+Looking at the plots, I would not agree with the promoters of Broadway plays using the prediction rule. 
+
+2. A story by James R. Hagerty entitled With Buyers Sidelined, Home Prices Slide published in the Thursday October 25, 2007 edition of the Wall Street Journal contained data on so-called fundamental housin indicators in major real estate markets across the US. The author argues that ...prices are generally falling and overdue loan payments are piling up. Thus, we shall consider data presented in the article on
++ Y = Percentage change in average price from July 2006 to July 2007(based on the S&P/Case-Shiller national housing index); and 
++ x = Percentage of mortgage loans 30 days of more overdue in latest quarter(based on data from Equifax and Moodys').
+
+The data is available on the book website in the file indicators.txt. Fit the following model to the data: Y = B0 + B1x + e. Complete the following tasks:
+
+```{r indicator data}
+indicator <- read.table('http://www.stat.tamu.edu/~sheather/book/docs/datasets/indicators.txt', header = TRUE)
+head(indicator)
+```
+
+```{r plot lm}
+plot(indicator$LoanPaymentsOverdue, indicator$PriceChange)
+
+lmod.indic <- lm(PriceChange ~ LoanPaymentsOverdue, indicator)
+abline(lmod.indic)
+```
+
+a. Find a 95% confidence interval for the slope of the regression model, B1. On the basis of this confidence interval decide whether there is evidence of a significant negative linear association.
+
+```{r lm indicator}
+lmod.indic <- lm(PriceChange ~ LoanPaymentsOverdue, indicator)
+abline(lmod.indic)
+```
+
+```{r slope indicator}
+sumary(lmod.indic)$coeff
+```
+From the above, we see that our slope is -2.25. We will find the confidence interval next. 
+
+```{r confidence interval}
+confint(lmod.indic, 'LoanPaymentsOverdue', level = .95)
+```
+
+Our confidence interval is [-4.16, -.33]. Based on this, there is a negative linear association.
+
+b. Use the fitted regresssion model to estimate E(Y|X = 4). Find a 95% confidence interval for E(Y|X = 4). Is 0% a feasible value for E(Y|X = 4)? Give reason to support your answer. 
+
+```{r}
+(predict(lmod.indic, data.frame(LoanPaymentsOverdue = 4), interval="confidence", level = .95))
+```
+
+Since 0 is not inthe range that we got, it is not  afeasible value for E(Y|X = 4).

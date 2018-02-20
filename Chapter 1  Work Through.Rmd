@@ -1,0 +1,70 @@
+---
+title: "DATA 621 HW 1"
+author: "Oluwakemi Omotunde"
+date: "February 4, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r obtain data}
+library(faraway)
+data(pima)
+summary(pima)
+```
+
+```{r replace 0 with NA}
+pima$diastolic [pima$diastolic == 0] <- NA
+pima$glucose [pima$glucose == 0] <- NA
+pima$triceps [pima$triceps == 0] <- NA
+pima$insulin [pima$insulin == 0] <- NA
+pima$bmi [pima$bmi == 0] <- NA
+
+pima$test <- factor(pima$test)
+summary(pima$test)
+
+levels(pima$test) <- c("negative", "positive")
+summary(pima)
+```
+
+
+```{r plottng}
+hist(pima$diastolic, xlab = "Diastolic", main = "")
+plot(density(pima$diastolic, na.rm = TRUE), main = "")
+plot(sort(pima$diastolic), ylab = "Sorted Diastolic")
+
+plot(diabetes ~ diastolic,  pima)
+plot(diabetes ~ test, pima)
+
+require(ggplot2)
+ggplot(pima, aes(x = diastolic)) + geom_histogram()
+ggplot(pima, aes(x = diastolic)) + geom_density()
+ggplot(pima, aes(x = diastolic, y = diabetes)) + geom_point()
+
+                                                  
+```
+
+
+```{r moon data}
+data(manilius)
+head(manilius)
+
+(moon3 <- aggregate(manilius[, 1:3], list(manilius$group), sum))
+solve(cbind(9, moon3$sinang, moon3$cosang), moon3$arc)
+
+lmod <- lm(arc ~ sinang + cosang, manilius)
+coef(lmod)
+```
+```{r heights data}
+data(GaltonFamilies, package = "HistData")
+plot(childHeight ~ midparentHeight, GaltonFamilies)
+
+
+lmod <- lm(childHeight ~ midparentHeight, GaltonFamilies)
+coef(lmod)
+
+abline(lmod)
+```
+
