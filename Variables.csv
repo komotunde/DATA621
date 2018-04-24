@@ -1,0 +1,27 @@
+﻿VARIABLE NAME,DEFINITION,THERORETICAL EFFECT
+INDEX,Identification Variable (do not use),None
+TARGET_FLAG,"Was car in crash? 1 = Yes, 0 = No",None
+TARGET_AMT,"If car was in a crash, what was the cost?",None
+AGE,Age of Driver,Very young people tend to be risky Maybe very old also
+BLUEBOOK,Value of Vehicle,Unknown effect on probability of collision but probably effect the payout if there is a crash
+CAR_AGE,Vehicle age,Unknown effect on probability of collision but probably effect the payout if there is a crash
+CAR_TYPE,Type of Car,Unknown effect on probability of collision but probably effect the payout if there is a crash
+CAR_USE,Vehicle use,"Commercial vehicles are driven more, so might increase probability of collision"
+CLM_FREQ,# Claims (past 5 years),The more claims you filed in the past the more you are likely to file in the future
+EDUCATION,Max Education Level,"Unknown effect , but in theory more educated people tend to drive more safely"
+HOMEKIDS,# of Children at Home,Unknown effect
+HOME_VAL,Home value,"In theory, home owners tend to drive more responsibly"
+INCOME,Income,"In theory, rich people tend to get in fewer crashes"
+JOB,Job Category,"In theory, white collar jobs tend to be safer"
+KIDSDRIV,# Driving Children,"When teenagers drive your car, you are more likely to get in crashes"
+MSTATUS,Marital Status,"In theory, married people drive more safely"
+MVR_PTS,Motor vehicle record points,"If you get lots of traffic tickets, you tend to get into more crashes"
+OLDCLAIM,Total claims (past 5 years),"If your total payout over the past five years was high, this suggest future payouts will be high"
+PARENT1,Single Parent,Unknown effect
+RED_CAR,A red car,Urban legend says that red cars (especially red sports cars) are more risky. Is that rue?
+REVOKED,License revoked(Past 7 years),"If your license was revoked in the past 7 years, you probably are amore risky driver"
+SEX,Gender,Urban legend says that women have less crasher than men. Is that true?
+TIF,Time in Force,People who have been customers for a long time are usually more safe
+TRAVTIME,Distance to Work,Long drives to work usually suggest greater risk
+URBANCIRY,Home/Work Area,Unknown
+YOJ,Years on job,People who stay at a job for a long time are usually more safe
